@@ -5,89 +5,131 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>For You ❤️</title>
 <style>
-*{box-sizing:border-box} body{margin:0;background:#fff7f8;font-family:Arial,sans-serif;color:#7e3038}
-.app{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px}
-.card{width:min(900px,100%);min-height:680px;border-radius:28px;overflow:hidden;background:#fff;box-shadow:0 18px 50px #0002;position:relative}
-.screen{display:none;min-height:680px;padding:28px 24px;text-align:center;background:radial-gradient(circle at 50% 35%,#fff 0,#fff7f8 55%,#ffe7ec 100%)}
-.screen.active{display:flex;flex-direction:column;align-items:center;justify-content:center}
-.photo-panel{width:100%;display:flex;gap:22px;align-items:center;justify-content:center;flex-wrap:wrap}
-.photo-frame{width:min(48%,360px);min-width:260px;aspect-ratio:1/1;border-radius:50%;padding:13px;background:#fff;border:8px solid #f2b7c0;box-shadow:0 8px 25px #b94b5a33;overflow:hidden}
-.photo-frame img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-.stars{font-size:30px;letter-spacing:12px;margin:8px 0 18px}
-h1{font-size:42px;margin:12px 0;color:#8d2d37;letter-spacing:1px}
-.sub{font-size:18px;color:#a65a63;margin:0 0 18px}
-.keypad{background:#f3a9b5;border-radius:22px;padding:18px;width:min(330px,100%);box-shadow:inset 0 0 0 1px #e88f9e}
-.dots{display:flex;justify-content:center;gap:9px;margin-bottom:14px}
-.dot{width:26px;height:34px;border:2px solid white;border-radius:5px;display:grid;place-items:center;color:#8d2d37;font-weight:bold}
-.dot.filled{background:#fff;color:#8d2d37}
-.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-button{font:inherit;border:0;cursor:pointer}
-.key{height:48px;border-radius:50%;background:#fff;color:#8d2d37;font-size:20px;box-shadow:0 3px 0 #d98692}
-.action{margin-top:15px;border-radius:25px;padding:10px 24px;background:#a9434d;color:#fff;font-weight:bold}
-.upload{margin-top:18px}
-.upload label{display:inline-block;background:#8d2d37;color:white;padding:11px 18px;border-radius:24px;cursor:pointer}
-input[type=file]{display:none}
-.wrong h1{font-size:40px}
-.cute{font-size:95px;margin:15px}
-.final img{width:min(320px,80%);max-height:300px;object-fit:cover;border-radius:24px;box-shadow:0 10px 25px #0002}
-.final h1{font-size:36px}
-.small{font-size:13px;color:#a66;margin-top:16px}
-@media(max-width:600px){.screen{min-height:calc(100vh - 36px);padding:20px 14px}.photo-frame{min-width:220px}.photo-panel{gap:12px}h1{font-size:34px}.wrong h1{font-size:32px}}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#ffdfe6;color:#7c2633}
+.stage{height:100dvh;width:100%;position:relative;overflow:hidden;background:linear-gradient(135deg,#fff7f8,#ffdce4)}
+.slides{height:100%;display:flex;transition:transform .65s cubic-bezier(.7,0,.2,1)}
+.slide{min-width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:24px}
+.card{width:min(430px,94vw);height:min(760px,94dvh);border-radius:34px;background:#fff7f8;box-shadow:0 18px 60px #8c304022;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 24px;position:relative;overflow:hidden}
+.card:before{content:"";position:absolute;width:260px;height:260px;border-radius:50%;background:#ffd2dc;top:-130px;right:-100px}
+.card:after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;background:#ffe8ed;bottom:-110px;left:-90px}
+.content{position:relative;z-index:2;width:100%;text-align:center}
+.kicker{font-size:14px;letter-spacing:4px;text-transform:uppercase;color:#b65d69;margin-bottom:12px}
+h1{font-family:Georgia,serif;font-size:42px;line-height:1.05;margin:10px 0 14px;color:#842d3a}
+p{font-size:17px;line-height:1.5;color:#a3545f;margin:8px 0 22px}
+.heart{font-size:62px;margin:8px}
+.photo{width:min(310px,78vw);aspect-ratio:1/1;border-radius:28px;overflow:hidden;border:9px solid white;box-shadow:0 12px 30px #7d2a3a30;background:#f4b8c2;margin:0 auto 20px}
+.photo img{width:100%;height:100%;object-fit:cover}
+.photo.empty:after{content:"Add her photo";height:100%;display:flex;align-items:center;justify-content:center;color:#a65a65;font-size:17px}
+.btn{border:0;background:#8f3543;color:#fff;padding:14px 30px;border-radius:28px;font-size:17px;font-weight:700;box-shadow:0 5px 0 #67232e;cursor:pointer}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 #67232e}
+.dots{position:absolute;bottom:18px;left:0;right:0;text-align:center;z-index:5}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#d59aa5;margin:0 5px;transition:.3s}
+.dot.on{width:24px;border-radius:8px;background:#8f3543}
+.nav{position:absolute;z-index:6;bottom:50px;left:0;right:0;display:flex;justify-content:space-between;padding:0 24px;pointer-events:none}
+.nav button{pointer-events:auto;width:45px;height:45px;border:0;border-radius:50%;background:#ffffffdd;color:#8f3543;font-size:22px;box-shadow:0 5px 20px #0001}
+.keypad{width:min(330px,100%);background:#f2acb8;border-radius:24px;padding:17px;margin:8px auto}
+.code{height:38px;display:flex;justify-content:center;gap:8px;margin-bottom:10px}
+.code span{width:28px;height:34px;border:2px solid white;border-radius:5px;color:#8f3543}
+.code span.fill{background:white}
+.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.key{height:47px;border:0;border-radius:50%;background:#fff;color:#8f3543;font-size:18px}
+.upload{margin-top:16px}
+.upload label{display:inline-block;padding:10px 18px;border-radius:22px;background:#f1b1bc;color:#7d2c39;font-weight:600}
+input{display:none}
+.message{background:white;border-radius:24px;padding:18px 20px;box-shadow:0 10px 25px #0000000d;margin:16px 0}
+.bigheart{font-size:85px;animation:pulse 1.2s infinite}
+@keyframes pulse{50%{transform:scale(1.12)}}
 </style>
 </head>
 <body>
-<div class="app"><div class="card">
+<div class="stage">
+  <div class="slides" id="slides">
 
-<section id="home" class="screen active">
-  <div class="stars">★ ♥ ★</div>
-  <div class="photo-panel"><div class="photo-frame"><img id="photo1" alt="Photo"></div></div>
-  <h1>Enter a passcode</h1>
-  <p class="sub">Only someone special knows it ❤️</p>
-  <div class="keypad">
-    <div class="dots" id="dots"></div>
-    <div class="keys">
-      <button class="key" onclick="press('1')">1</button><button class="key" onclick="press('2')">2</button><button class="key" onclick="press('3')">3</button>
-      <button class="key" onclick="press('4')">4</button><button class="key" onclick="press('5')">5</button><button class="key" onclick="press('6')">6</button>
-      <button class="key" onclick="press('7')">7</button><button class="key" onclick="press('8')">8</button><button class="key" onclick="press('9')">9</button>
-      <button class="key" onclick="press('*')">*</button><button class="key" onclick="press('0')">0</button><button class="key" onclick="press('#')">#</button>
-    </div>
-    <button class="action" onclick="check()">ENTER</button>
+    <section class="slide">
+      <div class="card"><div class="content">
+        <div class="kicker">A little surprise</div>
+        <div class="heart">♡</div>
+        <h1>For someone<br>very special</h1>
+        <p>I made something just for you.<br>Swipe through it ❤️</p>
+        <div class="photo empty" id="p1"></div>
+        <button class="btn" onclick="go(1)">Open it →</button>
+      </div></div>
+    </section>
+
+    <section class="slide">
+      <div class="card"><div class="content">
+        <div class="kicker">Secret access</div>
+        <h1>Enter the<br>passcode</h1>
+        <p>Only you should know this one.</p>
+        <div class="keypad">
+          <div class="code" id="code"></div>
+          <div class="keys">
+            <button class="key" onclick="press('1')">1</button><button class="key" onclick="press('2')">2</button><button class="key" onclick="press('3')">3</button>
+            <button class="key" onclick="press('4')">4</button><button class="key" onclick="press('5')">5</button><button class="key" onclick="press('6')">6</button>
+            <button class="key" onclick="press('7')">7</button><button class="key" onclick="press('8')">8</button><button class="key" onclick="press('9')">9</button>
+            <button class="key" onclick="press('*')">*</button><button class="key" onclick="press('0')">0</button><button class="key" onclick="press('#')">#</button>
+          </div>
+        </div>
+        <button class="btn" onclick="check()">Continue</button>
+        <div class="upload"><label>📷 Add her photos<input id="files" type="file" accept="image/*" multiple></label></div>
+      </div></div>
+    </section>
+
+    <section class="slide">
+      <div class="card"><div class="content">
+        <div class="kicker">Just because</div>
+        <div class="photo empty" id="p2"></div>
+        <h1>Look at you ❤️</h1>
+        <p>One photo wasn't enough…<br>so I made another slide.</p>
+        <button class="btn" onclick="go(3)">Next →</button>
+      </div></div>
+    </section>
+
+    <section class="slide">
+      <div class="card"><div class="content">
+        <div class="kicker">And finally</div>
+        <div class="bigheart">❤️</div>
+        <h1>You are<br>my favorite</h1>
+        <div class="message">No matter how many slides I make,<br>you'll always be the best part.</div>
+        <div class="photo empty" id="p3"></div>
+        <button class="btn" onclick="go(0)">Replay ↻</button>
+      </div></div>
+    </section>
+
   </div>
-  <div class="upload"><label>📷 Add her photos<input id="files" type="file" accept="image/*" multiple></label></div>
-  <div class="small">Tip: choose 1–5 photos. They will appear in the page.</div>
-</section>
+  <div class="nav"><button onclick="prev()">‹</button><button onclick="next()">›</button></div>
+  <div class="dots" id="dots"></div>
+</div>
 
-<section id="wrong" class="screen wrong">
-  <div class="stars">♥ ★ ♥</div>
-  <h1>WRONG PASSCODE!</h1>
-  <div class="cute">🩵 🐰</div>
-  <button class="action" onclick="resetCode()">TRY AGAIN</button>
-</section>
-
-<section id="final" class="screen final">
-  <div class="stars">♥ ♥ ♥</div>
-  <img id="finalPhoto" alt="Her photo">
-  <h1>Correct! ❤️</h1>
-  <p class="sub">This little surprise is just for you.</p>
-  <button class="action" onclick="location.reload()">Replay</button>
-</section>
-
-</div></div>
 <script>
-const PASS='143'; let code='';
-const dots=document.getElementById('dots');
-function render(){dots.innerHTML='';for(let i=0;i<4;i++){let d=document.createElement('div');d.className='dot'+(i<code.length?' filled':'');d.textContent=i<code.length?'•':'';dots.appendChild(d)}}
-function press(x){if(code.length<4){code+=x;render()}}
-function check(){ if(code===PASS){show('final')} else {show('wrong')} }
-function resetCode(){code='';render();show('home')}
-function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active')}
+let idx=0, code='', PASS='143', photos=[];
+const slides=document.getElementById('slides'), dots=document.getElementById('dots'), cd=document.getElementById('code');
+function draw(){
+ slides.style.transform=`translateX(-${idx*100}%)`;
+ dots.innerHTML=[0,1,2,3].map(i=>`<i class="dot ${i===idx?'on':''}"></i>`).join('');
+}
+function go(n){idx=n;draw()}
+function next(){go(Math.min(3,idx+1))}
+function prev(){go(Math.max(0,idx-1))}
+function renderCode(){cd.innerHTML=[0,1,2,3].map(i=>`<span class="${i<code.length?'fill':''}">${i<code.length?'•':''}</span>`).join('')}
+function press(x){if(code.length<4){code+=x;renderCode()}}
+function check(){
+ if(code===PASS){go(2)}
+ else {alert('Not quite ❤️ Try again');code='';renderCode()}
+}
 document.getElementById('files').addEventListener('change',e=>{
-  const files=[...e.target.files]; if(!files.length)return;
-  const urls=files.map(f=>URL.createObjectURL(f));
-  document.getElementById('photo1').src=urls[0];
-  document.getElementById('finalPhoto').src=urls[0];
+ photos=[...e.target.files].map(f=>URL.createObjectURL(f));
+ ['p1','p2','p3'].forEach((id,i)=>{
+   const el=document.getElementById(id);
+   if(photos[i%photos.length]) {el.classList.remove('empty');el.innerHTML=`<img src="${photos[i%photos.length]}">`;}
+ });
 });
-render();
+renderCode();draw();
+let sx=0;
+document.addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});
+document.addEventListener('touchend',e=>{let dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>60){dx<0?next():prev()}},{passive:true});
 </script>
 </body>
 </html>
