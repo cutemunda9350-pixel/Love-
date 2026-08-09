@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>For You ❤️</title>
+<style>
+*{box-sizing:border-box} body{margin:0;background:#fff7f8;font-family:Arial,sans-serif;color:#7e3038}
+.app{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px}
+.card{width:min(900px,100%);min-height:680px;border-radius:28px;overflow:hidden;background:#fff;box-shadow:0 18px 50px #0002;position:relative}
+.screen{display:none;min-height:680px;padding:28px 24px;text-align:center;background:radial-gradient(circle at 50% 35%,#fff 0,#fff7f8 55%,#ffe7ec 100%)}
+.screen.active{display:flex;flex-direction:column;align-items:center;justify-content:center}
+.photo-panel{width:100%;display:flex;gap:22px;align-items:center;justify-content:center;flex-wrap:wrap}
+.photo-frame{width:min(48%,360px);min-width:260px;aspect-ratio:1/1;border-radius:50%;padding:13px;background:#fff;border:8px solid #f2b7c0;box-shadow:0 8px 25px #b94b5a33;overflow:hidden}
+.photo-frame img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.stars{font-size:30px;letter-spacing:12px;margin:8px 0 18px}
+h1{font-size:42px;margin:12px 0;color:#8d2d37;letter-spacing:1px}
+.sub{font-size:18px;color:#a65a63;margin:0 0 18px}
+.keypad{background:#f3a9b5;border-radius:22px;padding:18px;width:min(330px,100%);box-shadow:inset 0 0 0 1px #e88f9e}
+.dots{display:flex;justify-content:center;gap:9px;margin-bottom:14px}
+.dot{width:26px;height:34px;border:2px solid white;border-radius:5px;display:grid;place-items:center;color:#8d2d37;font-weight:bold}
+.dot.filled{background:#fff;color:#8d2d37}
+.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+button{font:inherit;border:0;cursor:pointer}
+.key{height:48px;border-radius:50%;background:#fff;color:#8d2d37;font-size:20px;box-shadow:0 3px 0 #d98692}
+.action{margin-top:15px;border-radius:25px;padding:10px 24px;background:#a9434d;color:#fff;font-weight:bold}
+.upload{margin-top:18px}
+.upload label{display:inline-block;background:#8d2d37;color:white;padding:11px 18px;border-radius:24px;cursor:pointer}
+input[type=file]{display:none}
+.wrong h1{font-size:40px}
+.cute{font-size:95px;margin:15px}
+.final img{width:min(320px,80%);max-height:300px;object-fit:cover;border-radius:24px;box-shadow:0 10px 25px #0002}
+.final h1{font-size:36px}
+.small{font-size:13px;color:#a66;margin-top:16px}
+@media(max-width:600px){.screen{min-height:calc(100vh - 36px);padding:20px 14px}.photo-frame{min-width:220px}.photo-panel{gap:12px}h1{font-size:34px}.wrong h1{font-size:32px}}
+</style>
+</head>
+<body>
+<div class="app"><div class="card">
+
+<section id="home" class="screen active">
+  <div class="stars">★ ♥ ★</div>
+  <div class="photo-panel"><div class="photo-frame"><img id="photo1" alt="Photo"></div></div>
+  <h1>Enter a passcode</h1>
+  <p class="sub">Only someone special knows it ❤️</p>
+  <div class="keypad">
+    <div class="dots" id="dots"></div>
+    <div class="keys">
+      <button class="key" onclick="press('1')">1</button><button class="key" onclick="press('2')">2</button><button class="key" onclick="press('3')">3</button>
+      <button class="key" onclick="press('4')">4</button><button class="key" onclick="press('5')">5</button><button class="key" onclick="press('6')">6</button>
+      <button class="key" onclick="press('7')">7</button><button class="key" onclick="press('8')">8</button><button class="key" onclick="press('9')">9</button>
+      <button class="key" onclick="press('*')">*</button><button class="key" onclick="press('0')">0</button><button class="key" onclick="press('#')">#</button>
+    </div>
+    <button class="action" onclick="check()">ENTER</button>
+  </div>
+  <div class="upload"><label>📷 Add her photos<input id="files" type="file" accept="image/*" multiple></label></div>
+  <div class="small">Tip: choose 1–5 photos. They will appear in the page.</div>
+</section>
+
+<section id="wrong" class="screen wrong">
+  <div class="stars">♥ ★ ♥</div>
+  <h1>WRONG PASSCODE!</h1>
+  <div class="cute">🩵 🐰</div>
+  <button class="action" onclick="resetCode()">TRY AGAIN</button>
+</section>
+
+<section id="final" class="screen final">
+  <div class="stars">♥ ♥ ♥</div>
+  <img id="finalPhoto" alt="Her photo">
+  <h1>Correct! ❤️</h1>
+  <p class="sub">This little surprise is just for you.</p>
+  <button class="action" onclick="location.reload()">Replay</button>
+</section>
+
+</div></div>
+<script>
+const PASS='143'; let code='';
+const dots=document.getElementById('dots');
+function render(){dots.innerHTML='';for(let i=0;i<4;i++){let d=document.createElement('div');d.className='dot'+(i<code.length?' filled':'');d.textContent=i<code.length?'•':'';dots.appendChild(d)}}
+function press(x){if(code.length<4){code+=x;render()}}
+function check(){ if(code===PASS){show('final')} else {show('wrong')} }
+function resetCode(){code='';render();show('home')}
+function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active')}
+document.getElementById('files').addEventListener('change',e=>{
+  const files=[...e.target.files]; if(!files.length)return;
+  const urls=files.map(f=>URL.createObjectURL(f));
+  document.getElementById('photo1').src=urls[0];
+  document.getElementById('finalPhoto').src=urls[0];
+});
+render();
+</script>
+</body>
+</html>
